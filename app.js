@@ -4,6 +4,7 @@ const api = require('./src/api/api')
 const cluster = require('cluster');
 const express = require('express');
 const app = express();
+const errorHandler = require('./src/lib/errorHandler');
 
 if (cluster.isMaster) { 
 	var numCPUs = require('os').cpus().length;
@@ -22,10 +23,18 @@ if (cluster.isMaster) {
 	});
 }
 else {
-	// console.log( 'current worker pid is ' + process.pid );
+  app.set('port', process.env.PORT || 3000);
   
-  // var app = express();
   
+  app.get('/errorTest', api.errorTest);
+  
+  // app.use(function (err, req, res, next) {
+  //   // console.log(err.type);
+  //   // console.log(err.stack);
+  //   res.status(500).json({ code: err.type, description: 'error detail' });
+  //   // res.send(500, { code: err.type, description: 'error detail' });
+  // });
+
 	app.get('/', api.getRoot);
 
   app.get('/test1', api.getTest1);
@@ -46,7 +55,10 @@ else {
 
   app.get('/getmember/:user_id', api.getMember);
 
-  app.listen(3000, function () {
+  app.use(errorHandler.commonHandler);
+  app.use(errorHandler.notFoundHandler);
+
+  app.listen(app.get('port'), function () {
     console.log('listening on port 3000!');
   });
 } 

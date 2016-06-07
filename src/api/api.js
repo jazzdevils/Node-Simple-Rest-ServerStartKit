@@ -3,6 +3,7 @@
 const CONST = require('../const/const');
 const func = require('../lib/functions');
 const DBPool = require('../lib/dbpool');
+const HttpStatus = require('../const/httpStatusCode');
 
 exports.getRoot = function (req, res) {
   res.send('Hello World!한글日本語 ');
@@ -146,6 +147,13 @@ exports.getMember = function(req, res){
         res.end(JSON.stringify(rows));
     });
   });  
+};
+
+exports.errorTest = function(req, res, next){
+  var err = new Error('error');
+  err.type = HttpStatus.INTERNAL_SERVER_ERROR;
+  err.desc = HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR);
+  next(err);  
 };
 
 
