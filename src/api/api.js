@@ -4,6 +4,8 @@ const CONST = require('../const/const');
 const func = require('../lib/functions');
 const DBPool = require('../lib/dbpool');
 const HttpStatus = require('../const/httpStatusCode');
+const underScore = require('underscore');
+const errorHandler = require('../lib/errorHandler');
 
 exports.getRoot = function (req, res) {
   res.send('Hello World!한글日本語 ');
@@ -132,28 +134,29 @@ exports.imageSave = function (req, res) {
 
 exports.getMember = function(req, res){
   var id = req.params.user_id;
-  
-  DBPool.acquire(function(err, db) {
-    if (err) {
-      return res.end("CONNECTION error: " + err);
-    }
- 
-    db.query("select * from Members where ID = ?", [id], function(err, rows, columns) {
+  try {
+    DBPool.acquire(function (err, db) {
+      if (err) {
+        return res.end("CONNECTION error: " + err);
+      }
+
+      db.query("select * from Members where ID = ?", [id], function (err, rows, columns) {
         DBPool.release(db);
- 
+
         if (err) {
           return res.end("QUERY ERROR: " + err);
         }
         res.end(JSON.stringify(rows));
+      });
     });
-  });  
+  } catch (error) {
+    console.log('INTERNAL_SERVER_ERROR')
+    next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR));
+  }
 };
 
 exports.errorTest = function(req, res, next){
-  var err = new Error('error');
-  err.type = HttpStatus.INTERNAL_SERVER_ERROR;
-  err.desc = HttpStatus.getStatusText(HttpStatus.INTERNAL_SERVER_ERROR);
-  next(err);  
+  next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR)); 
 };
 
 
