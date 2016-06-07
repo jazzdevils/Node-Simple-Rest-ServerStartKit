@@ -1,3 +1,5 @@
+"use strict";
+
 const CONST = require('../const/const');
 const multer = require('multer');
 
