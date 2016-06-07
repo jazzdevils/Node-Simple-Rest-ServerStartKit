@@ -61,11 +61,6 @@ var _promise2 = function delay(time) {
 exports.getTest = function (req, res) {  
     var user_id = req.params.user_id;
     res.json(user_id);  
-    // dbConnection.query('select * from test_table where user_id=?', 
-    //                     [user_id], 
-    //                         function (err, rows, fields) {    
-    //     res.json(rows);  
-    // });
 };
 
 var test1 = function (StrParams) {
