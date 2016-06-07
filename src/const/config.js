@@ -1,10 +1,10 @@
 const config = {
   DATABASE: {
-    host: '192.168.0.71',
+    host: 'your host',
     port: 3306,
-    user: 'asp_dba',
-    password: 'zmstkfka',
-    databaseName: 'new_necca',
+    user: 'db user',
+    password: 'db password',
+    databaseName: 'database name',
   },
 
   DBPOOL: {
