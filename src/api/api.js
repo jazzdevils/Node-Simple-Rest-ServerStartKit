@@ -6,24 +6,32 @@ const DBPool = require('../lib/dbpool');
 const HttpStatus = require('../const/httpStatusCode');
 const underScore = require('underscore');
 const errorHandler = require('../lib/errorHandler');
+const dbHandler = require('../lib/dbHandler');
 
-exports.getRoot = function (req, res) {
-  res.send('Hello World!한글日本語 ');
+var schemas = require('../model/schemas');
+
+exports.getRoot = function (req, res, next) {
+  var _helloMsg = schemas.helloMsg;
+  _helloMsg.eng = 'Hello!';
+  _helloMsg.jpn = 'おはいようございます。';
+  _helloMsg.kor = '안녕하세요';
+  
+  res.status(HttpStatus.OK).json(_helloMsg);
 };
 
-exports.getTest1 = function (req, res) {
+exports.getTest1 = function (req, res, next) {
   res.send('Test1...테스트 ');
 };
 
-exports.getTest2 = function (req, res) {
+exports.getTest2 = function (req, res, next) {
   res.send('Test2...테스트 ');
 };
 
-exports.getTest3 = function (req, res) {
+exports.getTest3 = function (req, res, next) {
   res.send('Test3...테스트 ');
 };
 
-exports.getPromiseTest = function(req, res){
+exports.getPromiseTest = function(req, res, next){
   var seconds = req.params.seconds * CONST._SECONDS_VALUE;
   
   _promise1(seconds).then(
@@ -35,7 +43,7 @@ exports.getPromiseTest = function(req, res){
   })  
 };
 
-exports.getPromiseallTest = function (req, res) {
+exports.getPromiseallTest = function (req, res, next) {
   Promise.all([_promise1(1000), _promise2(2000)]).then(
     function () {
       res.send('OK....');
@@ -61,7 +69,7 @@ var _promise2 = function delay(time) {
   });
 }
 
-exports.getTest = function (req, res) {  
+exports.getTest = function (req, res, next) {  
     var user_id = req.params.user_id;
     res.json(user_id);  
 };
@@ -76,7 +84,7 @@ var test1 = function (StrParams) {
   return string;
 }
 
-exports.getSortTest = function (req, res) {
+exports.getSortTest = function (req, res, next) {
   var oTest = {
     id: '1',
     className: '테스트',
@@ -108,7 +116,7 @@ exports.getSortTest = function (req, res) {
   
 };
 
-exports.getFilterTest = function (req, res) {
+exports.getFilterTest = function (req, res, next) {
   var arr = [11, 3, 9, 130,33,2,8];
   
   res.json(arr.filter(function (value) {
@@ -116,7 +124,7 @@ exports.getFilterTest = function (req, res) {
   }));
 };
 
-exports.imageSave = function (req, res) {
+exports.imageSave = function (req, res, next) {
     func.imageSave(req, res, function(err) {
       if(err) {
         res.json(err);
@@ -132,27 +140,25 @@ exports.imageSave = function (req, res) {
     });
 };
 
-exports.getMember = function(req, res){
+exports.getMember = function(req, res, next){
   var id = req.params.user_id;
-  try {
-    DBPool.acquire(function (err, db) {
-      if (err) {
-        return res.end("CONNECTION error: " + err);
+  dbHandler.getMember_query(id, function(err, row) {
+    if(err) {
+      // console.log('err : ' + err);
+      next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR));  
+    } else {
+      if(row.length == 1) {
+        var _user = schemas.user;
+        _user.id = row[0].ID;
+        _user.barcode = row[0].Barcode;
+        _user.name = row[0].Name;
+        _user.telno = row[0].TelNo;
+        _user.jointime = row[0].JoinTime;
+
+        res.status(HttpStatus.OK).json(_user); 
       }
-
-      db.query("select * from Members where ID = ?", [id], function (err, rows, columns) {
-        DBPool.release(db);
-
-        if (err) {
-          return res.end("QUERY ERROR: " + err);
-        }
-        res.end(JSON.stringify(rows));
-      });
-    });
-  } catch (error) {
-    console.log('INTERNAL_SERVER_ERROR')
-    next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR));
-  }
+    }
+  });
 };
 
 exports.errorTest = function(req, res, next){

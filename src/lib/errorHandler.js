@@ -1,4 +1,5 @@
 const HttpStatus = require('../const/httpStatusCode');
+var schemas = require('../model/schemas');
 
 exports.createError = function(httpStatusCode){
   var err = new Error('error');
@@ -9,15 +10,17 @@ exports.createError = function(httpStatusCode){
 };
 
 exports.commonHandler = function (err, req, res, next) {
-  res.status(err.type).json({
-    code: err.type,
-    description: err.desc
-  });
+  var _error = schemas.error;
+  _error.code = err.type;
+  _error.description = err.desc;  
+  
+  res.status(err.type).json(_error);
 };
 
 exports.notFoundHandler = function (req, res) {
-  res.status(HttpStatus.NOT_FOUND).json({
-    code: HttpStatus.NOT_FOUND,
-    description: HttpStatus.getStatusText(HttpStatus.NOT_FOUND),
-  });
+  var _error = schemas.error;
+  _error.code = HttpStatus.NOT_FOUND;
+  _error.description = HttpStatus.getStatusText(HttpStatus.NOT_FOUND);
+    
+  res.status(HttpStatus.NOT_FOUND).json(_error);
 };

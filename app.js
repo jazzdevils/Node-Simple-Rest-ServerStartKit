@@ -53,7 +53,7 @@ else {
 
   app.post('/upload', api.imageSave);
 
-  app.get('/getmember/:user_id', api.getMember);
+  app.get('/v1/getmember/:user_id', api.getMember);
 
   app.use(errorHandler.commonHandler);
   app.use(errorHandler.notFoundHandler);
