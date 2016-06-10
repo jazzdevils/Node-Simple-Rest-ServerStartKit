@@ -7,6 +7,7 @@ const HttpStatus = require('../const/httpStatusCode');
 const underScore = require('underscore');
 const errorHandler = require('../lib/errorHandler');
 const dbHandler = require('../lib/dbHandler');
+const logger = require('../lib/logger');
 
 var schemas = require('../model/schemas');
 
@@ -15,6 +16,8 @@ exports.getRoot = function (req, res, next) {
   _helloMsg.eng = 'Hello!';
   _helloMsg.jpn = 'おはいようございます。';
   _helloMsg.kor = '안녕하세요';
+  
+  logger('mongodb').log('info', _helloMsg);
   
   res.status(HttpStatus.OK).json(_helloMsg);
 };
@@ -144,7 +147,8 @@ exports.getMember = function(req, res, next){
   var id = req.params.user_id;
   dbHandler.getMember_query(id, function(err, row) {
     if(err) {
-      // console.log('err : ' + err);
+      logger('mongodb').log('error', err);
+      
       next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR));  
     } else {
       if(row.length == 1) {
@@ -153,9 +157,15 @@ exports.getMember = function(req, res, next){
         _user.barcode = row[0].Barcode;
         _user.name = row[0].Name;
         _user.telno = row[0].TelNo;
-        _user.jointime = row[0].JoinTime;
+        _user.jointime = new Date(row[0].JoinTime).toFormat('YYYY-MM-DD HH24:MI');;
+        
+        logger('mongodb').log('info', _user);
 
         res.status(HttpStatus.OK).json(_user); 
+      } else {
+        logger('mongodb').log('error', JSON.stringify(errorHandler.createError(HttpStatus.NOT_FOUND))); 
+        
+        next(errorHandler.createError(HttpStatus.NOT_FOUND));
       }
     }
   });

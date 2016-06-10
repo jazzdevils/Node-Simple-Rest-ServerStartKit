@@ -1,5 +1,7 @@
 "use strict";
 
+require('date-utils');
+
 const api = require('./src/api/api')
 const cluster = require('cluster');
 const express = require('express');
@@ -20,6 +22,7 @@ if (cluster.isMaster) {
 	
 	cluster.on('exit', function(worker, code, signal) {
 		console.log('worker ' + worker.process.pid + ' died');
+    cluster.fork();
 	});
 }
 else {

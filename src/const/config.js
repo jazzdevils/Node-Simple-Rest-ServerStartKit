@@ -1,10 +1,10 @@
 const config = {
   DATABASE: {
-    host: 'your host',
+    host: '127.0.0.1',
     port: 3306,
-    user: 'db user',
-    password: 'db password',
-    databaseName: 'database name',
+    user: '',
+    password: '',
+    databaseName: '',
   },
 
   DBPOOL: {
@@ -16,7 +16,30 @@ const config = {
   },
 
   IMAGE: {
-    savePath: '../../images',
+    savePath: './images',
+  },
+
+  WINSTONE_MONGODB:{
+    uri: 'mongodb://127.0.0.1:27017/logs',
+    collection: 'dblogs' 
+  },
+  
+  WINSTONE_INFO_FILE: {
+    name: 'infoLog',
+    level: 'info',
+    filename: './logs/info.log',
+    maxsize: 1000000,
+    maxFiles: 5,
+    dateFormat: 'YYYY-MM-DD HH24:MI:SS'
+  },
+
+  WINSTONE_ERROR_FILE: {
+    name: 'errorLog',
+    level: 'error',
+    filename: './logs/err.log',
+    maxsize: 1000000,
+    maxFiles: 5,
+    dateFormat: 'YYYY-MM-DD HH24:MI:SS'
   },
 };
 
