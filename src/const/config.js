@@ -1,5 +1,5 @@
 const config = {
-  MODE: 'RELEASE', //MODE: 'release',
+  MODE: 'debug', //MODE: 'release',
   
   DATABASE: {
     host: '127.0.0.1',
