@@ -1,4 +1,6 @@
 const config = {
+  MODE: 'RELEASE', //MODE: 'release',
+  
   DATABASE: {
     host: '127.0.0.1',
     port: 3306,
@@ -19,9 +21,16 @@ const config = {
     savePath: './images',
   },
 
+  WINSTONE_CONSOLE:{
+    name: 'consoleLog',
+    colorize: false, 
+    dateFormat: 'YYYY-MM-DD HH24:MI:SS',
+    json: false
+  },
+
   WINSTONE_MONGODB:{
     uri: 'mongodb://127.0.0.1:27017/logs',
-    collection: 'dblogs' 
+    collection: 'dblogs'
   },
   
   WINSTONE_INFO_FILE: {
@@ -30,7 +39,8 @@ const config = {
     filename: './logs/info.log',
     maxsize: 1000000,
     maxFiles: 5,
-    dateFormat: 'YYYY-MM-DD HH24:MI:SS'
+    dateFormat: 'YYYY-MM-DD HH24:MI:SS',
+    json: false
   },
 
   WINSTONE_ERROR_FILE: {
@@ -39,7 +49,8 @@ const config = {
     filename: './logs/err.log',
     maxsize: 1000000,
     maxFiles: 5,
-    dateFormat: 'YYYY-MM-DD HH24:MI:SS'
+    dateFormat: 'YYYY-MM-DD HH24:MI:SS',
+    json: false
   },
 };
 

@@ -17,7 +17,7 @@ exports.getRoot = function (req, res, next) {
   _helloMsg.jpn = 'おはいようございます。';
   _helloMsg.kor = '안녕하세요';
   
-  logger('mongodb').log('info', _helloMsg);
+  logger.log('info', 'api.getRoot', _helloMsg);
   
   res.status(HttpStatus.OK).json(_helloMsg);
 };
@@ -130,7 +130,9 @@ exports.getFilterTest = function (req, res, next) {
 exports.imageSave = function (req, res, next) {
     func.imageSave(req, res, function(err) {
       if(err) {
-        res.json(err);
+        logger.log('error', err);
+      
+        next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR));
       }else {
         func.saveToDB(req.body.contents, req.files, function(err) {
           if (err === false){
@@ -147,7 +149,7 @@ exports.getMember = function(req, res, next){
   var id = req.params.user_id;
   dbHandler.getMember_query(id, function(err, row) {
     if(err) {
-      logger('mongodb').log('error', err);
+      logger.log('error', 'api.getMember', err);
       
       next(errorHandler.createError(HttpStatus.INTERNAL_SERVER_ERROR));  
     } else {
@@ -159,11 +161,11 @@ exports.getMember = function(req, res, next){
         _user.telno = row[0].TelNo;
         _user.jointime = new Date(row[0].JoinTime).toFormat('YYYY-MM-DD HH24:MI');;
         
-        logger('mongodb').log('info', _user);
+        logger.log('info', 'api.getMember', _user);
 
         res.status(HttpStatus.OK).json(_user); 
       } else {
-        logger('mongodb').log('error', JSON.stringify(errorHandler.createError(HttpStatus.NOT_FOUND))); 
+        logger.log('error', 'api.getMember', 'row.length <> 1'); 
         
         next(errorHandler.createError(HttpStatus.NOT_FOUND));
       }
