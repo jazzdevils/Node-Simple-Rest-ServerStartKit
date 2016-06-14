@@ -4,7 +4,7 @@ const config = require('../const/config')
 
 module.exports = new function() {
   switch(config.MODE.toLowerCase()) {
-    case 'debug' :
+    case 'debug' : //using Console
       return new (winston.Logger)({
         transports: [
           new (winston.transports.Console)({
@@ -17,7 +17,7 @@ module.exports = new function() {
           })
         ]
       });
-    case 'release' :
+    case 'release' : //using MongoDB
       return new (winston.Logger)({
         transports: [
           new (winston.transports.MongoDB)({
