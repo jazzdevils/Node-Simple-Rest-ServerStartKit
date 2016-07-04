@@ -63,7 +63,7 @@ const config = {
     },
     android: {
       collapseKey: '',
-      apiKey: '',
+      accessKey: '',
       delayWhileIdle: false,
       timeToLive: 60 * 60 * 24 * 5,
       retryCount: 4,
