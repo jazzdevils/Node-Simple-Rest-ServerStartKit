@@ -52,6 +52,23 @@ const config = {
     dateFormat: 'YYYY-MM-DD HH24:MI:SS',
     json: false
   },
+
+  PUSH_SYSTEM: {
+    ios: {
+      gateway: 'gateway.sandbox.push.apple.com', //for developer
+      cert: './keys/cert.pem',
+      key: './keys/key.pem',
+      port: 2195,
+      sound: 'defalut',
+    },
+    android: {
+      collapseKey: '',
+      apiKey: '',
+      delayWhileIdle: false,
+      timeToLive: 60 * 60 * 24 * 5,
+      retryCount: 4,
+    }
+  }
 };
 
 module.exports = config;
